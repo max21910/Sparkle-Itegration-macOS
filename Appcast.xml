@@ -16,7 +16,7 @@
                
             </sparkle:releaseNotesLink>
             <pubDate>Mon, 3 May 2023 20:43:11 +0000</pubDate>
-            <enclosure url="https://example.com/downloads/app.zip.or.dmg.or.tar.etc"
+            <enclosure url="https://github.com/max21910/Sparkle-Itegration-macOS-/raw/main/2.0.zip"
             sparkle:edSignature="Lx1cHeDDqbaC/+yeyaG5m4zcBXA0SJSIueXQcLxrqMMlFi0XZWmsN/NxNs8Ec3kNLRXSk6OGUEdmbJtoim0TDw==" length="919825"
 
                         type="application/octet-stream" />
