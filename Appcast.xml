@@ -3,11 +3,7 @@
 <channel>
 <title>AirBuddy</title>
     <language>fr</language>
-        <item>
-        <title>Version 2.0</title>
-        
-        <!-- The rest of the feed item -->
-        </item>
+       
         <item>
             <title>Version 2.0 (2 bugs fixed; 3 new features)</title>
             <link>https:/github.com/max21910</link>
