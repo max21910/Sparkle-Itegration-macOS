@@ -6,19 +6,20 @@ Exemple of Sparkle-Itegration( for macOS)
 This is an exemple to an integration of Sparkle updater engine in macOS app 
 ## How to Instal ? 
 Follow the instalation guide from the sparkle website : 
-1. Add the Sparkle framework to your project
-If you use Swift Package Manager:
+
+## Swift Package Manager
+
 
 In your Xcode project: File › Add Packages…
 Enter https://github.com/sparkle-project/Sparkle as the package repository URL
 Choose the Package Options. The default options will let Xcode automatically update versions of Sparkle 2.
 From Xcode’s project navigator, if you right click and show the Sparkle package in Finder, you will find Sparkle’s tools to generate and sign updates in ../artifacts/Sparkle/
 
-If you use CocoaPods:
+## CocoaPods:
 
 Add pod 'Sparkle' to your Podfile.
 Add or uncomment use_frameworks! in your Podfile.
-If you use Carthage:
+## Carthage:
 
 Add binary "https://sparkle-project.org/Carthage/Sparkle.json" to your Cartfile.
 Run carthage update
@@ -34,7 +35,7 @@ Sparkle’s tools to generate and sign updates are not included from Carthage an
 
 Sparkle only supports using a binary origin with Carthage because Carthage strips necessary code signing information when building the project from source.
 
-If you want to add Sparkle manually:
+## Sparkle manually:
 
 Get the latest version of Sparkle.
 Link the Sparkle framework to your app target:
@@ -56,7 +57,7 @@ Pre-releases when available are published on GitHub. They are also available in 
 
 A more nightly build from our repository can be downloaded from our GitHub Actions page by selecting a recent workflow commit and downloading the Sparkle-distribution*.tar.xz artifact. Alternatively, you may clone Sparkle’s repository with all its submodules, run make release, and extract the binaries in the resulting Sparkle-*.tar.xz (or .bz2) archive.
 
-2. Set up a Sparkle updater object
+## Set up a Sparkle updater object
 These instructions are for regular .app bundles in Cocoa. If you want to use Sparkle from other UI toolkits such as SwiftUI or want to instantiate the updater yourself, please visit our programmatic setup. If you want to update a non-app bundle, such as a Preference Pane or a plug-in, follow step 2 for non-app bundles.
 
 Open up your MainMenu.xib.
@@ -70,7 +71,7 @@ If you are using Sparkle 1, you will need to use SUUpdater instead of SPUStandar
 
 That’s it. No other API calls are required to start the updater and have it manage checking for updates automatically. If you intend to pursue additional updater APIs, please first check API Expectations from our programmatic setup.
 
-3. Segue for security concerns
+## Segue for security concerns
 Because Sparkle is downloading executable code to your users’ systems, you must be very careful about security. To let Sparkle know that a downloaded update is not corrupted and came from you (instead of a malicious attacker), we recommend:
 
 Serve updates over HTTPS.
@@ -86,28 +87,33 @@ Please ensure your signing keys are kept safe and cannot be stolen if your web s
 
 EdDSA (ed25519) signatures
 To prepare signing with EdDSA signatures:
-
-Run ./bin/generate_keys tool (from the Sparkle distribution root). This needs to be done only once. This tool will do two things:
+```
+Run ./bin/generate_keys tool (from the Sparkle distribution root). 
+```
+This needs to be done only once. This tool will do two things:
 
 It will generate a private key and save it in your login Keychain on your Mac. You don’t need to do anything with it, but do keep it safe. See further notes below if you happen to lose your private key.
 It will print your public key to embed into applications. Copy that key (it’s a base64-encoded string). You can run ./bin/generate_keys again to see your public key at any time.
 Then add your public key to your app’s Info.plist as a SUPublicEDKey property. Note that for new projects created with Xcode 12 or later, this file may be in the Info tab under your target settings.
-
+```
 Here is an example run of ./bin/generate_keys:
+```
 
 A key has been generated and saved in your keychain. Add the `SUPublicEDKey` key to
 the Info.plist of each app for which you intend to use Sparkle for distributing
 updates. It should appear like this:
-
+```
     <key>SUPublicEDKey</key>
     <string>pfIShU4dEXqPd5ObYNfDBiQWcXozk7estwzTnF9BamQ=</string>
+    
+    ```
 You can use the -x private-key-file and -f private-key-file options to export and import the keys respectively when transferring keys to another Mac. Otherwise we recommend keeping the keys inside your Mac’s keychain. Be sure to keep them safe and not lose them (they will be erased if your keychain or system is erased).
 
 If your keys are lost however, you can still sign new updates for Developer ID signed applications through key rotation. Note this will not work for Installer package based updates or for applications that are not code signed. In those cases you may lose the ability to sign new updates.
 
 Please visit Migrating to EdDSA from DSA if you are still providing DSA signatures so you can learn how to stop supporting them.
 
-Apple code signing
+## Apple code signing
 If you are code-signing your application via Apple’s Developer ID program, Sparkle will ensure the new version’s author matches the old version’s. Sparkle also performs shallow (but not deep) validation for testing if the new application’s code signature is valid.
 
 Note that embedding the Sparkle.framework into the bundle of a Developer ID application requires that you code-sign the framework and its helper tools with your Developer ID keys. Xcode should do this automatically if you create an archive via Product › Archive and Distribute App choosing Developer ID method of distribution.
@@ -117,7 +123,7 @@ For regular application updates, if you both code-sign your application with App
 
 We recommend rotating keys only when necessary like if you need to change your Developer ID certificate, lose access to your EdDSA private key, or need to change (Ed)DSA keys due to migrating away from DSA.
 
-4. Distributing your App
+## Distributing your App
 We recommend distributing your app in Xcode by creating a Product › Archive and Distribute App choosing Developer ID method of distribution. Using Xcode’s Archive Organizer will ensure Sparkle’s helper tools are code signed properly for distribution. In automated environments, this can instead be done using xcodebuild archive and xcodebuild -exportArchive.
 
 If you distribute your app on your website as a Apple-certificate-signed disk image (DMG):
@@ -132,18 +138,21 @@ If your app is running from a read-only mount, you can encourage (if you want) y
 
 Sparkle supports updating from ZIP archives, tarballs, disk images (DMGs), and installer packages. While you can reuse the same archive for distribution of your app on your website, we recommend serving ZIPs or tarballs (e.g. tar.xz) for updates because they are the fastest and most reliable formats for Sparkle. Disk images (DMGs) can be significantly slower to extract programmatically and sometimes be less reliable to attach/detach. Installer packages should rarely be used for distribution or updates (i.e. only for kexts, but not for installing daemons or installing system extensions).
 
-5. Publish your appcast
+## Publish your appcast
 Sparkle uses appcasts to get information about software updates. An appcast is an RSS feed with some extra information for Sparkle’s purposes.
 
-Add a SUFeedURL property to your Info.plist; set its value to a URL where your appcast will be hosted, e.g. https://yourcompany.example.com/appcast.xml. We strongly encourage you to use HTTPS URLs for the appcast.
+Add a SUFeedURL property to your Info.plist; set its value to a URL where your appcast will be hosted, e.g.
+``` https://yourcompany.example.com/appcast.xml. 
+```
+We strongly encourage you to use HTTPS URLs for the appcast.
 Note that your app bundle must have an incrementing and properly formatted CFBundleVersion key in your Info.plist. Sparkle uses this to compare and determine the latest version of your bundle.
 If you update regular app bundles and you have set up EdDSA signatures, you can use a tool to generate appcasts automatically:
 
 Build your app and compress it (e.g. in a ZIP/tar.xz/DMG archive), and put the archive in a new folder. This folder will be used to store all your future updates.
 Run generate_appcast tool from Sparkle’s distribution archive specifying the path to the folder with update archives. Allow it to access the Keychain if it asks for it (it’s needed to generate signatueres in the appcast).
-
+```
 ./bin/generate_appcast /path/to/your/updates_folder/
-
+```
 The tool will generate the appcast file (using filename from SUFeedURL) and also *.delta update files for faster incremental updates. Upload your archives, the delta updates, and the appcast to your server.
 When generating the appcast, if an .html file exists with the same name as the archive, then it will added as the releaseNotesLink. Run generate_appcast -h for a full overview and list of supported options.
 
@@ -161,13 +170,5 @@ The update process will be logged to Console.app. If anything goes wrong, you sh
 
 Make sure to also keep Sparkle’s debug symbols files (.dSYM) around as they will be useful for symbolicating crash logs if something were to go wrong.
 
-Next steps
-That’s it! You’re done! You don’t have to do any more. But you might want to:
-
-Read more on publishing an update
-Customize Sparkle’s settings and behavior for your product.
-Add update settings to your settings panel.
-Add binary delta updates to your application.
-Add gentle update reminders for your application.
-Learn about gathering anonymous statistics about your users’ systems.
-Review Sparkle 2’s API Reference
+## Next steps
+That’s it! You’re done! You don’t have to do any more. 
