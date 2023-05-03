@@ -17,8 +17,8 @@
             </sparkle:releaseNotesLink>
             <pubDate>Mon, 3 May 2023 20:43:11 +0000</pubDate>
             <enclosure url="https://example.com/downloads/app.zip.or.dmg.or.tar.etc"
-                        sparkle:edSignature="7cLALFUHSwvEJWSkV8aMreoBe4fhRa4FncC5NoThKxwThL6FDR7hTiPJh1fo2uagnPogisnQsgFgq6mGkt2RBw=="
-                        length="1623481"
+            sparkle:edSignature="Lx1cHeDDqbaC/+yeyaG5m4zcBXA0SJSIueXQcLxrqMMlFi0XZWmsN/NxNs8Ec3kNLRXSk6OGUEdmbJtoim0TDw==" length="919825"
+
                         type="application/octet-stream" />
         </item>
     </channel>
