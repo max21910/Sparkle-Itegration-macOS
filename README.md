@@ -165,7 +165,7 @@ updates. It should appear like this:
     <key>SUPublicEDKey</key>
     <string>pfIShU4dEXqPd5ObYNfDBiQWcXozk7estwzTnF9BamQ=</string>
     
-    ```
+ ```
 You can use the -x private-key-file and -f private-key-file options to export and import the keys respectively when transferring keys to another Mac. Otherwise we recommend keeping the keys inside your Mac’s keychain. Be sure to keep them safe and not lose them (they will be erased if your keychain or system is erased).
 
 If your keys are lost however, you can still sign new updates for Developer ID signed applications through key rotation. Note this will not work for Installer package based updates or for applications that are not code signed. In those cases you may lose the ability to sign new updates.
