@@ -4,24 +4,34 @@
 [![forthebadge](https://forthebadge.com/images/badges/made-with-swift.svg)](https://forthebadge.com)
 ## Description
 This is an exemple to an integration of Sparkle updater engine in macOS app 
+
+<img src="Resources/Screenshot.png" width="732" alt="Sparkle shows familiar update window with release notes">
+
 ## How to Instal ? 
 Follow the instalation guide from the sparkle website : 
+* 1) add the Sparkle Frameworks
 
 ## Swift Package Manager
 
-
 In your Xcode project: File › Add Packages…
-Enter https://github.com/sparkle-project/Sparkle as the package repository URL
+Enter :
+```
+https://github.com/sparkle-project/Sparkle 
+```
+as the package repository URL
 Choose the Package Options. The default options will let Xcode automatically update versions of Sparkle 2.
 From Xcode’s project navigator, if you right click and show the Sparkle package in Finder, you will find Sparkle’s tools to generate and sign updates in ../artifacts/Sparkle/
 
 ## CocoaPods:
 
-Add pod 'Sparkle' to your Podfile.
+Add``` pod 'Sparkle'```
+ to your Podfile.
 Add or uncomment use_frameworks! in your Podfile.
 ## Carthage:
 
-Add binary "https://sparkle-project.org/Carthage/Sparkle.json" to your Cartfile.
+Add binary
+``` "https://sparkle-project.org/Carthage/Sparkle.json"
+``` to your Cartfile.
 Run carthage update
 Link the Sparkle framework to your app target:
 Drag the built Carthage/Build/Mac/Sparkle.framework into your Xcode project.
@@ -50,28 +60,72 @@ In Frameworks, Libraries, and Embedded Content section, change Sparkle.framework
 In Build Settings tab set “Runpath Search Paths” to @loader_path/../Frameworks (for non-Xcode projects add the flags -Wl,-rpath,@loader_path/../Frameworks). By default, recent versions of Xcode set this to @executable_path/../Frameworks which is already sufficient for regular applications.
 If you have your own process for copying/packaging your app make sure it preserves symlinks!
 If you enable Library Validation, which is part of the Hardened Runtime and required for notarization, you will also need to either sign your application with an Apple Development certificate for development (requires being in Apple’s developer program), or disable library validation for Debug configurations only. Otherwise, the system may not let your application load Sparkle if you attempt to sign to run locally via an ad-hoc signature. This is not an issue for distribution when you sign your application with a Developer ID certificate.
-
+```
+* 
 Sandboxed applications using Sparkle 2 require additional setup.
-
+```
 Pre-releases when available are published on GitHub. They are also available in Swift Package Manager, CocoaPods, and Carthage too by specifying the pre-release version in your project’s manifest.
 
-A more nightly build from our repository can be downloaded from our GitHub Actions page by selecting a recent workflow commit and downloading the Sparkle-distribution*.tar.xz artifact. Alternatively, you may clone Sparkle’s repository with all its submodules, run make release, and extract the binaries in the resulting Sparkle-*.tar.xz (or .bz2) archive.
+
 
 ## Set up a Sparkle updater object
-These instructions are for regular .app bundles in Cocoa. If you want to use Sparkle from other UI toolkits such as SwiftUI or want to instantiate the updater yourself, please visit our programmatic setup. If you want to update a non-app bundle, such as a Preference Pane or a plug-in, follow step 2 for non-app bundles.
+in swift ui :
+```
+import SwiftUI
+import Sparkle
 
-Open up your MainMenu.xib.
-Choose View › Show Library…
-Type “Object” in the search field under the object library and drag an Object into the left sidebar of the document editor.
-Select the Object that was just added.
-Choose View › Inspectors › Identity.
-Type SPUStandardUpdaterController in the Class box of the Custom Class section in the inspector.
-If you’d like, make a “Check for Updates…” menu item in the application menu; set its target to the SPUStandardUpdaterController instance and its action to checkForUpdates:.
-If you are using Sparkle 1, you will need to use SUUpdater instead of SPUStandardUpdaterController in the above steps. In Sparkle 2, SUUpdater is a deprecated stub. While it is still functional for transitional purposes, new applications will want to migrate to SPUStandardUpdaterController.
+// This view model class publishes when new updates can be checked by the user
+final class CheckForUpdatesViewModel: ObservableObject {
+    @Published var canCheckForUpdates = false
 
-That’s it. No other API calls are required to start the updater and have it manage checking for updates automatically. If you intend to pursue additional updater APIs, please first check API Expectations from our programmatic setup.
+    init(updater: SPUUpdater) {
+        updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
+    }
+}
 
-## Segue for security concerns
+// This is the view for the Check for Updates menu item
+// Note this intermediate view is necessary for the disabled state on the menu item to work properly before Monterey.
+// See https://stackoverflow.com/questions/68553092/menu-not-updating-swiftui-bug for more info
+struct CheckForUpdatesView: View {
+    @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
+    private let updater: SPUUpdater
+    
+    init(updater: SPUUpdater) {
+        self.updater = updater
+        
+        // Create our view model for our CheckForUpdatesView
+        self.checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater)
+    }
+    
+    var body: some View {
+        Button("Check for Updates…", action: updater.checkForUpdates)
+            .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
+    }
+}
+
+@main
+struct MyApp: App {
+    private let updaterController: SPUStandardUpdaterController
+    
+    init() {
+        // If you want to start the updater manually, pass false to startingUpdater and call .startUpdater() later
+        // This is where you can also pass an updater delegate if you need one
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+        }
+        .commands {
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(updater: updaterController.updater)
+            }
+        }
+    }
+}
+```
+##  security concerns
 Because Sparkle is downloading executable code to your users’ systems, you must be very careful about security. To let Sparkle know that a downloaded update is not corrupted and came from you (instead of a malicious attacker), we recommend:
 
 Serve updates over HTTPS.
