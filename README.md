@@ -5,7 +5,7 @@
 ## Description
 This is an exemple to an integration of Sparkle updater engine in macOS app 
 
-<img src="Resources/Screenshot.png" width="732" alt="Sparkle shows familiar update window with release notes">
+<img src="https://github.com/max21910/Sparkle-Itegration-macOS-/blob/main/Ressources/Screenshot.png?raw=true" width="732" alt="Sparkle shows familiar update window with release notes">
 
 ## How to Instal ? 
 Follow the instalation guide from the sparkle website : 
