@@ -27,7 +27,7 @@ From Xcode’s project navigator, if you right click and show the Sparkle packag
 
 Add
 ``` pod 'Sparkle'
-'```
+```
 
  to your Podfile.
 Add or uncomment use_frameworks! in your Podfile.
