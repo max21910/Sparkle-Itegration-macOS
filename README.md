@@ -25,14 +25,17 @@ From Xcode’s project navigator, if you right click and show the Sparkle packag
 
 ##  CocoaPods:
 
-Add``` pod 'Sparkle'```
+Add
+``` pod 'Sparkle'
+'```
+
  to your Podfile.
 Add or uncomment use_frameworks! in your Podfile.
 ##  Carthage:
 
 Add binary
-``` "https://sparkle-project.org/Carthage/Sparkle.json"
-``` to your Cartfile.
+ "https://sparkle-project.org/Carthage/Sparkle.json"
+ to your Cartfile.
 Run carthage update
 Link the Sparkle framework to your app target:
 Drag the built Carthage/Build/Mac/Sparkle.framework into your Xcode project.
