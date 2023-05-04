@@ -7,14 +7,15 @@ This is an exemple to an integration of Sparkle updater engine in macOS app
 
 <img src="https://github.com/max21910/Sparkle-Itegration-macOS-/blob/main/Ressources/Screenshot.png?raw=true" width="732" alt="Sparkle shows familiar update window with release notes">
 
-## How to Instal ? 
+##  How to Instal ? 
 Follow the instalation guide from the sparkle website : 
 * 1) add the Sparkle Frameworks
 
-## Swift Package Manager
+##  Swift Package Manager
 
 In your Xcode project: File › Add Packages…
 Enter :
+
 ```
 https://github.com/sparkle-project/Sparkle 
 ```
@@ -22,12 +23,12 @@ as the package repository URL
 Choose the Package Options. The default options will let Xcode automatically update versions of Sparkle 2.
 From Xcode’s project navigator, if you right click and show the Sparkle package in Finder, you will find Sparkle’s tools to generate and sign updates in ../artifacts/Sparkle/
 
-## CocoaPods:
+##  CocoaPods:
 
 Add``` pod 'Sparkle'```
  to your Podfile.
 Add or uncomment use_frameworks! in your Podfile.
-## Carthage:
+##  Carthage:
 
 Add binary
 ``` "https://sparkle-project.org/Carthage/Sparkle.json"
@@ -41,11 +42,8 @@ Click on your project in the Project Navigator.
 Click your target in the project editor.
 Click on the General tab.
 In Frameworks, Libraries, and Embedded Content section, change Sparkle.framework to Embed & Sign.
-Sparkle’s tools to generate and sign updates are not included from Carthage and need to be grabbed from our latest release.
 
-Sparkle only supports using a binary origin with Carthage because Carthage strips necessary code signing information when building the project from source.
-
-## Sparkle manually:
+##  Sparkle manually:
 
 Get the latest version of Sparkle.
 Link the Sparkle framework to your app target:
@@ -60,16 +58,18 @@ In Frameworks, Libraries, and Embedded Content section, change Sparkle.framework
 In Build Settings tab set “Runpath Search Paths” to @loader_path/../Frameworks (for non-Xcode projects add the flags -Wl,-rpath,@loader_path/../Frameworks). By default, recent versions of Xcode set this to @executable_path/../Frameworks which is already sufficient for regular applications.
 If you have your own process for copying/packaging your app make sure it preserves symlinks!
 If you enable Library Validation, which is part of the Hardened Runtime and required for notarization, you will also need to either sign your application with an Apple Development certificate for development (requires being in Apple’s developer program), or disable library validation for Debug configurations only. Otherwise, the system may not let your application load Sparkle if you attempt to sign to run locally via an ad-hoc signature. This is not an issue for distribution when you sign your application with a Developer ID certificate.
+
 ```
-* 
+
 Sandboxed applications using Sparkle 2 require additional setup.
 ```
 Pre-releases when available are published on GitHub. They are also available in Swift Package Manager, CocoaPods, and Carthage too by specifying the pre-release version in your project’s manifest.
 
 
 
-## Set up a Sparkle updater object
-in swift ui :
+##  Set up a Sparkle updater object
+in swift ui :  
+
 ```
 import SwiftUI
 import Sparkle
@@ -125,7 +125,9 @@ struct MyApp: App {
     }
 }
 ```
-##  security concerns
+
+##  security concerns  
+
 Because Sparkle is downloading executable code to your users’ systems, you must be very careful about security. To let Sparkle know that a downloaded update is not corrupted and came from you (instead of a malicious attacker), we recommend:
 
 Serve updates over HTTPS.
