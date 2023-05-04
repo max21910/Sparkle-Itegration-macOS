@@ -73,7 +73,7 @@ Pre-releases when available are published on GitHub. They are also available in 
 ##  Set up a Sparkle updater object
 in swift ui :  
 
-```
+```swiftui
 import SwiftUI
 import Sparkle
 
